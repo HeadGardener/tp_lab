@@ -30,6 +30,13 @@ type LogWorkerInput struct {
 	Password string `json:"password"`
 }
 
+type UpdateWorkerInput struct {
+	Name        *string `json:"name"`
+	Surname     *string `json:"surname"`
+	FathersName *string `json:"fathers_name"`
+	Phone       *string `json:"phone"`
+}
+
 type WorkerAttributes struct {
 	ID   int    `json:"id"`
 	Role string `json:"role"`
@@ -40,13 +47,12 @@ func (w *CreateWorkerInput) Validate() error {
 		return errors.New("name fields can't be empty")
 	}
 
-	re, _ := regexp.Compile(`^[\+]?[0-9]{3}[\s][0-9]{2,3}[\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}$`)
-	if w.Phone == "" || !re.MatchString(w.Phone) {
+	if w.Phone == "" || !validatePhone(w.Phone) {
 		return errors.New("empty or invalid phone number")
 	}
 
-	if w.Role == "" {
-		return errors.New("role field can't be empty")
+	if w.Role != "admin" && w.Role != "worker" {
+		return errors.New("invalid role")
 	}
 
 	if w.Password == "" {
@@ -61,8 +67,7 @@ func (w *LogWorkerInput) Validate() error {
 		return errors.New("name fields can't be empty")
 	}
 
-	re, _ := regexp.Compile(`^[\+]?[0-9]{3}[\s][0-9]{2,3}[\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}$`)
-	if w.Phone == "" || !re.MatchString(w.Phone) {
+	if w.Phone == "" || !validatePhone(w.Phone) {
 		return errors.New("empty or invalid phone number")
 	}
 
@@ -71,4 +76,27 @@ func (w *LogWorkerInput) Validate() error {
 	}
 
 	return nil
+}
+
+func (w *UpdateWorkerInput) ToWorker(worker *Worker) {
+	if w.Name != nil && worker.Name != *w.Name {
+		worker.Name = *w.Name
+	}
+
+	if w.Surname != nil && worker.Surname != *w.Surname {
+		worker.Surname = *w.Surname
+	}
+
+	if w.FathersName != nil && worker.FathersName != *w.FathersName {
+		worker.FathersName = *w.FathersName
+	}
+
+	if w.Phone != nil && worker.Phone != *w.Phone && validatePhone(*w.Phone) {
+		worker.Phone = *w.Phone
+	}
+}
+
+func validatePhone(phone string) bool {
+	re, _ := regexp.Compile(`^[\+]?[0-9]{3}[\s][0-9]{2,3}[\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}$`)
+	return re.MatchString(phone)
 }

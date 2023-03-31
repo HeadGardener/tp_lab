@@ -42,11 +42,13 @@ func (h *Handler) InitRoutes() http.Handler {
 		r.Use(h.checkRole)
 		r.Route("/worker", func(r chi.Router) {
 			r.Post("/sign-up", h.createWorker)
-			r.Get("/getall/", h.getAllWorkers)
+			r.Get("/get-all/", h.getAllWorkers)
 			r.Get("/get/{worker_id}", h.getWorkerByID)
 			r.Put("/update/{worker_id}", h.updateWorker)
-			r.Delete("/delete/{worker_id}", h.deleteWorker)
+			// r.Delete("/delete/{worker_id}", h.deleteWorker)
 		})
+		//  переделать базу данных (добавить таблицу удаленных работников и убрать переходную таблицу, также создать
+		//	референс от таблицы документов к работникам без каскадного удаления)
 		r.Route("/gsm", func(r chi.Router) {
 			r.Put("/{document_id}", h.updateDocument)
 			r.Delete("/{document_id}", h.deleteDocument)

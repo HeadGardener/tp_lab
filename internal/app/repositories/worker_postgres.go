@@ -48,3 +48,39 @@ func (r *WorkerRepository) GetWorker(worker *models.Worker) error {
 
 	return nil
 }
+
+func (r *WorkerRepository) GetAll() ([]models.Worker, error) {
+	var workers []models.Worker
+
+	query := fmt.Sprintf("select * from %s where role='worker'", workersTable)
+
+	if err := r.db.Select(&workers, query); err != nil {
+		return nil, err
+	}
+
+	return workers, nil
+}
+
+func (r *WorkerRepository) GetByID(workerID int) (models.Worker, error) {
+	var worker models.Worker
+
+	query := fmt.Sprintf("select * from %s where id=$1", workersTable)
+
+	if err := r.db.Get(&worker, query, workerID); err != nil {
+		return models.Worker{}, err
+	}
+
+	return worker, nil
+}
+
+func (r *WorkerRepository) Update(worker models.Worker) error {
+	query := fmt.Sprintf(`UPDATE %s SET name=$1, surname=$2, fathers_name=$3, phone=$4 WHERE id=$5`,
+		workersTable)
+
+	_, err := r.db.Exec(query, worker.Name, worker.Surname, worker.FathersName, worker.Phone, worker.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

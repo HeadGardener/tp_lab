@@ -8,6 +8,9 @@ import (
 type WorkerInterface interface {
 	CreateWorker(worker models.Worker) (int, error)
 	GetWorker(worker *models.Worker) error
+	GetAll() ([]models.Worker, error)
+	GetByID(workerID int) (models.Worker, error)
+	Update(worker models.Worker) error
 }
 
 type Repository struct {

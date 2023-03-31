@@ -25,3 +25,22 @@ func (s *AdminService) CreateWorker(workerInput models.CreateWorkerInput) (int, 
 
 	return s.repos.WorkerInterface.CreateWorker(worker)
 }
+
+func (s *AdminService) GetAll() ([]models.Worker, error) {
+	return s.repos.WorkerInterface.GetAll()
+}
+
+func (s *AdminService) GetByID(workerID int) (models.Worker, error) {
+	return s.repos.WorkerInterface.GetByID(workerID)
+}
+
+func (s *AdminService) UpdateWorker(workerID int, workerInput models.UpdateWorkerInput) error {
+	worker, err := s.repos.WorkerInterface.GetByID(workerID)
+	if err != nil {
+		return err
+	}
+
+	workerInput.ToWorker(&worker)
+
+	return s.repos.WorkerInterface.Update(worker)
+}

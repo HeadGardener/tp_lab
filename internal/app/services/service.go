@@ -12,6 +12,9 @@ type Authorization interface {
 
 type Administration interface {
 	CreateWorker(workerInput models.CreateWorkerInput) (int, error)
+	GetAll() ([]models.Worker, error)
+	GetByID(workerID int) (models.Worker, error)
+	UpdateWorker(workerID int, workerInput models.UpdateWorkerInput) error
 }
 
 type Service struct {
