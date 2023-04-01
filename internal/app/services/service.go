@@ -17,14 +17,21 @@ type Administration interface {
 	UpdateWorker(workerID int, workerInput models.UpdateWorkerInput) error
 }
 
+type GSMInterface interface {
+	Create(workerID int, docInput models.CreateDocInput) (int, error)
+	GetAll() ([]models.Document, error)
+}
+
 type Service struct {
 	Authorization
 	Administration
+	GSMInterface
 }
 
 func NewService(repos *repositories.Repository) *Service {
 	return &Service{
 		Authorization:  NewAuthService(repos),
 		Administration: NewAdminService(repos),
+		GSMInterface:   NewGSMService(repos),
 	}
 }

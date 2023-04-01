@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"github.com/HeadHardener/tp_lab/internal/app/models"
 	"net/http"
 	"strings"
@@ -63,4 +64,14 @@ func (h *Handler) checkRole(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getWorkerID(r *http.Request) (int, error) {
+	workerCtxValue := r.Context().Value(workerCtx)
+	workerAttributes, ok := workerCtxValue.(models.WorkerAttributes)
+	if !ok {
+		return 0, errors.New("workerCtx value is not of type WorkerAttributes")
+	}
+
+	return workerAttributes.ID, nil
 }

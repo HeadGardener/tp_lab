@@ -13,12 +13,19 @@ type WorkerInterface interface {
 	Update(worker models.Worker) error
 }
 
+type GSMInterface interface {
+	Create(workerID int, document models.Document) (int, error)
+	GetAll() ([]models.Document, error)
+}
+
 type Repository struct {
 	WorkerInterface
+	GSMInterface
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		WorkerInterface: NewWorkerRepository(db),
+		GSMInterface:    NewGSMRepository(db),
 	}
 }

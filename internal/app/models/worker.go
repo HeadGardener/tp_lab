@@ -5,6 +5,8 @@ import (
 	"regexp"
 )
 
+var checkPhone = regexp.MustCompile(`^[\+]?[0-9]{3}\s[0-9]{2,3}\s[0-9]{3}-[0-9]{2}-[0-9]{2}$`)
+
 type Worker struct {
 	ID           int    `json:"id" db:"id"`
 	Name         string `json:"name" db:"name"`
@@ -47,7 +49,7 @@ func (w *CreateWorkerInput) Validate() error {
 		return errors.New("name fields can't be empty")
 	}
 
-	if w.Phone == "" || !validatePhone(w.Phone) {
+	if w.Phone == "" || !checkPhone.MatchString(w.Phone) {
 		return errors.New("empty or invalid phone number")
 	}
 
@@ -67,7 +69,7 @@ func (w *LogWorkerInput) Validate() error {
 		return errors.New("name fields can't be empty")
 	}
 
-	if w.Phone == "" || !validatePhone(w.Phone) {
+	if w.Phone == "" || !checkPhone.MatchString(w.Phone) {
 		return errors.New("empty or invalid phone number")
 	}
 
@@ -91,12 +93,7 @@ func (w *UpdateWorkerInput) ToWorker(worker *Worker) {
 		worker.FathersName = *w.FathersName
 	}
 
-	if w.Phone != nil && worker.Phone != *w.Phone && validatePhone(*w.Phone) {
+	if w.Phone != nil && worker.Phone != *w.Phone && checkPhone.MatchString(*w.Phone) {
 		worker.Phone = *w.Phone
 	}
-}
-
-func validatePhone(phone string) bool {
-	re, _ := regexp.Compile(`^[\+]?[0-9]{3}[\s][0-9]{2,3}[\s][0-9]{3}[-][0-9]{2}[-][0-9]{2}$`)
-	return re.MatchString(phone)
 }

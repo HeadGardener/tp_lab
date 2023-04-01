@@ -5,7 +5,7 @@ create table workers
     surname       varchar(50)  not null,
     fathers_name  varchar(50)  not null,
     phone         varchar(25)  not null unique,
-    role          varchar(50)  not null default 'accountant',
+    role          varchar(50)  not null default 'worker',
     password_hash varchar(255) not null
 );
 
@@ -14,7 +14,7 @@ create table documents
     id          serial primary key,
     car         varchar(50)                  not null,
     car_id      varchar(50)                  not null unique,
-    waybill     varchar(50)                  not null,
+    waybill     int                          not null,
     driver_name varchar(255)                 not null,
     gas_amount  int check ( gas_amount > 0 ) not null,
     gas_type    varchar(50)                  not null,
