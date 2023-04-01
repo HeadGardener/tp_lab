@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/HeadHardener/tp_lab/internal/app/models"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) createDocument(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +49,19 @@ func (h *Handler) getAllDocuments(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getDocumentByID(w http.ResponseWriter, r *http.Request) {
+	docID, err := strconv.Atoi(chi.URLParam(r, "document_id"))
+	if err != nil {
+		h.newErrResponse(w, http.StatusBadRequest, "invalid document_id param")
+		return
+	}
+
+	document, err := h.service.GSMInterface.GetByID(docID)
+	if err != nil {
+		h.newErrResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newResponse(w, http.StatusOK, document)
 }
 
 func (h *Handler) updateDocument(w http.ResponseWriter, r *http.Request) {

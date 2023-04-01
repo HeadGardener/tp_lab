@@ -30,3 +30,7 @@ func (s *GSMService) Create(workerID int, docInput models.CreateDocInput) (int, 
 func (s *GSMService) GetAll() ([]models.Document, error) {
 	return s.repos.GSMInterface.GetAll()
 }
+
+func (s *GSMService) GetByID(docID int) (models.Document, error) {
+	return s.repos.GSMInterface.GetByID(docID)
+}

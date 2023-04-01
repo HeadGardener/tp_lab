@@ -20,6 +20,7 @@ type Administration interface {
 type GSMInterface interface {
 	Create(workerID int, docInput models.CreateDocInput) (int, error)
 	GetAll() ([]models.Document, error)
+	GetByID(docID int) (models.Document, error)
 }
 
 type Service struct {

@@ -60,3 +60,15 @@ func (r *GSMRepository) GetAll() ([]models.Document, error) {
 
 	return documents, nil
 }
+
+func (r *GSMRepository) GetByID(docID int) (models.Document, error) {
+	var document models.Document
+
+	query := fmt.Sprintf("select * from %s where id=$1", docsTable)
+
+	if err := r.db.Get(&document, query, docID); err != nil {
+		return models.Document{}, err
+	}
+
+	return document, nil
+}

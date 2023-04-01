@@ -16,6 +16,7 @@ type WorkerInterface interface {
 type GSMInterface interface {
 	Create(workerID int, document models.Document) (int, error)
 	GetAll() ([]models.Document, error)
+	GetByID(docID int) (models.Document, error)
 }
 
 type Repository struct {
