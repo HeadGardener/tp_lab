@@ -12,7 +12,7 @@ func (h *Handler) createDocument(w http.ResponseWriter, r *http.Request) {
 	var docInput models.CreateDocInput
 
 	if err := json.NewDecoder(r.Body).Decode(&docInput); err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, "invalid data to decode docInput")
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -84,7 +84,7 @@ func (h *Handler) updateDocument(w http.ResponseWriter, r *http.Request) {
 	var docInput models.UpdateDocInput
 
 	if err := json.NewDecoder(r.Body).Decode(&docInput); err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, "invalid data to decode docInput")
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 

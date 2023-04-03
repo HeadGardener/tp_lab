@@ -10,7 +10,7 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 	var workerInput models.LogWorkerInput
 
 	if err := json.NewDecoder(r.Body).Decode(&workerInput); err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, "invalid data to decode worker")
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 

@@ -12,7 +12,7 @@ func (h *Handler) createWorker(w http.ResponseWriter, r *http.Request) {
 	var workerInput models.CreateWorkerInput
 
 	if err := json.NewDecoder(r.Body).Decode(&workerInput); err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, "invalid data to decode worker")
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *Handler) updateWorker(w http.ResponseWriter, r *http.Request) {
 	var workerInput models.UpdateWorkerInput
 
 	if err := json.NewDecoder(r.Body).Decode(&workerInput); err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, "invalid data to decode worker")
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
