@@ -21,6 +21,7 @@ type GSMInterface interface {
 	Create(workerID int, docInput models.CreateDocInput) (int, error)
 	GetAll() ([]models.Document, error)
 	GetByID(docID int) (models.Document, error)
+	GetAllWithID(workerID int) ([]models.Document, error)
 	Update(docID int, docInput models.UpdateDocInput) error
 	Delete(docID int) error
 }

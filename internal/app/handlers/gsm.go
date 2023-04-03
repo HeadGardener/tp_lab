@@ -64,6 +64,22 @@ func (h *Handler) getDocumentByID(w http.ResponseWriter, r *http.Request) {
 	newResponse(w, http.StatusOK, document)
 }
 
+func (h *Handler) getDocumentsWithWorkerID(w http.ResponseWriter, r *http.Request) {
+	workerID, err := getWorkerID(r)
+	if err != nil {
+		h.newErrResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	documents, err := h.service.GSMInterface.GetAllWithID(workerID)
+	if err != nil {
+		h.newErrResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newResponse(w, http.StatusOK, documents)
+}
+
 func (h *Handler) updateDocument(w http.ResponseWriter, r *http.Request) {
 	var docInput models.UpdateDocInput
 

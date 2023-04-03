@@ -58,6 +58,7 @@ func (h *Handler) InitRoutes() http.Handler {
 			r.Post("/", h.createDocument)
 			r.Get("/", h.getAllDocuments)
 			r.Get("/{document_id}", h.getDocumentByID)
+			r.Get("/my", h.getDocumentsWithWorkerID)
 		})
 	})
 

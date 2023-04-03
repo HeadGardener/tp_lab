@@ -36,6 +36,10 @@ func (s *GSMService) GetByID(docID int) (models.Document, error) {
 	return s.repos.GSMInterface.GetByID(docID)
 }
 
+func (s *GSMService) GetAllWithID(workerID int) ([]models.Document, error) {
+	return s.repos.GSMInterface.GetAllWithWorkerID(workerID)
+}
+
 func (s *GSMService) Update(docID int, docInput models.UpdateDocInput) error {
 	_, err := s.repos.GSMInterface.GetByID(docID)
 	if err != nil {

@@ -73,6 +73,19 @@ func (r *GSMRepository) GetByID(docID int) (models.Document, error) {
 	return document, nil
 }
 
+func (r *GSMRepository) GetAllWithWorkerID(workerID int) ([]models.Document, error) {
+	var documents []models.Document
+
+	query := fmt.Sprintf("select d.* from %s d inner join %s wd on d.id=wd.document_id where wd.worker_id=$1",
+		docsTable, workersDocsTable)
+
+	if err := r.db.Select(&documents, query, workerID); err != nil {
+		return nil, err
+	}
+
+	return documents, nil
+}
+
 func (r *GSMRepository) Update(document models.Document) error {
 	query := fmt.Sprintf(`update %s 
 						set car=$1, car_id=$2, waybill=$3, driver_name=$4, gas_amount=$5, gas_type=$6, issue_date=$7
