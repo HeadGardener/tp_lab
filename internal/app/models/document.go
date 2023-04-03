@@ -34,6 +34,16 @@ type CreateDocInput struct {
 	IssueDate  MyTime `json:"issue_date" db:"issue_date"`
 }
 
+type UpdateDocInput struct {
+	Car        *string `json:"car" db:"car"`
+	CarID      *string `json:"car_id" db:"car_id"`
+	Waybill    *int    `json:"waybill" db:"waybill"`
+	DriverName *string `json:"driver_name" db:"driver_name"`
+	GasAmount  *int    `json:"gas_amount" db:"gas_amount"`
+	GasType    *string `json:"gas_type" db:"gas_type"`
+	IssueDate  *MyTime `json:"issue_date" db:"issue_date"`
+}
+
 func (d *CreateDocInput) Validate() error {
 	if d.Car == "" || d.DriverName == "" || d.GasType == "" {
 		return errors.New("there can't be empty fields")
@@ -52,6 +62,40 @@ func (d *CreateDocInput) Validate() error {
 	}
 
 	return nil
+}
+
+func (d *UpdateDocInput) ToDocument() Document {
+	var doc Document
+
+	if d.Car != nil && doc.Car != *d.Car {
+		doc.Car = *d.Car
+	}
+
+	if d.CarID != nil && doc.CarID != *d.CarID && checkCarID.MatchString(*d.CarID) {
+		doc.CarID = *d.CarID
+	}
+
+	if d.Waybill != nil && doc.Waybill != *d.Waybill {
+		doc.Waybill = *d.Waybill
+	}
+
+	if d.DriverName != nil && doc.DriverName != *d.DriverName {
+		doc.DriverName = *d.DriverName
+	}
+
+	if d.GasAmount != nil && doc.GasAmount != *d.GasAmount {
+		doc.GasAmount = *d.GasAmount
+	}
+
+	if d.GasType != nil && doc.GasType != *d.GasType {
+		doc.GasType = *d.GasType
+	}
+
+	if d.IssueDate != nil && doc.IssueDate != *d.IssueDate {
+		doc.IssueDate = *d.IssueDate
+	}
+
+	return doc
 }
 
 func (mt *MyTime) UnmarshalJSON(b []byte) error {

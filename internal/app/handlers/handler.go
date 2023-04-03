@@ -29,35 +29,36 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	// auth
-	r.Route("/auth", func(r chi.Router) {
-		r.Post("/sign-in", h.signIn)
-	})
-
-	r.Route("/admin", func(r chi.Router) {
-		r.Use(h.identifyUser)
-		r.Use(h.checkRole)
-		r.Route("/worker", func(r chi.Router) {
-			r.Post("/sign-up", h.createWorker)
-			r.Get("/get-all/", h.getAllWorkers)
-			r.Get("/get/{worker_id}", h.getWorkerByID)
-			r.Put("/update/{worker_id}", h.updateWorker)
-			// r.Delete("/delete/{worker_id}", h.deleteWorker)
+	r.Route("/api", func(r chi.Router) {
+		// auth
+		r.Route("/auth", func(r chi.Router) {
+			r.Post("/sign-in", h.signIn)
 		})
+
+		r.Route("/admin", func(r chi.Router) {
+			r.Use(h.identifyUser)
+			r.Use(h.checkRole)
+			r.Route("/worker", func(r chi.Router) {
+				r.Post("/sign-up", h.createWorker)
+				r.Get("/get-all/", h.getAllWorkers)
+				r.Get("/get/{worker_id}", h.getWorkerByID)
+				r.Put("/update/{worker_id}", h.updateWorker)
+				// r.Delete("/delete/{worker_id}", h.deleteWorker)
+			})
+			r.Route("/gsm", func(r chi.Router) {
+				r.Put("/{document_id}", h.updateDocument)
+				r.Delete("/{document_id}", h.deleteDocument)
+			})
+		})
+
 		r.Route("/gsm", func(r chi.Router) {
-			r.Put("/{document_id}", h.updateDocument)
-			r.Delete("/{document_id}", h.deleteDocument)
+			r.Use(h.identifyUser)
+			r.Post("/", h.createDocument)
+			r.Get("/", h.getAllDocuments)
+			r.Get("/{document_id}", h.getDocumentByID)
 		})
-	})
-
-	r.Route("/gsm", func(r chi.Router) {
-		r.Use(h.identifyUser)
-		r.Post("/", h.createDocument)
-		r.Get("/", h.getAllDocuments)
-		r.Get("/{document_id}", h.getDocumentByID)
 	})
 
 	return r

@@ -80,7 +80,8 @@ func (w *LogWorkerInput) Validate() error {
 	return nil
 }
 
-func (w *UpdateWorkerInput) ToWorker(worker *Worker) {
+func (w *UpdateWorkerInput) ToWorker() Worker {
+	var worker Worker
 	if w.Name != nil && worker.Name != *w.Name {
 		worker.Name = *w.Name
 	}
@@ -96,4 +97,6 @@ func (w *UpdateWorkerInput) ToWorker(worker *Worker) {
 	if w.Phone != nil && worker.Phone != *w.Phone && checkPhone.MatchString(*w.Phone) {
 		worker.Phone = *w.Phone
 	}
+
+	return worker
 }

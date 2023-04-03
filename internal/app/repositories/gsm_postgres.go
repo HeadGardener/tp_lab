@@ -72,3 +72,44 @@ func (r *GSMRepository) GetByID(docID int) (models.Document, error) {
 
 	return document, nil
 }
+
+func (r *GSMRepository) Update(document models.Document) error {
+	query := fmt.Sprintf(`update %s 
+						set car=$1, car_id=$2, waybill=$3, driver_name=$4, gas_amount=$5, gas_type=$6, issue_date=$7
+						where id=$8`, docsTable)
+
+	if _, err := r.db.Exec(query,
+		document.Car,
+		document.CarID,
+		document.Waybill,
+		document.DriverName,
+		document.GasAmount,
+		document.GasType,
+		document.IssueDate,
+		document.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *GSMRepository) Delete(docID int) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	deleteFromDocsQuery := fmt.Sprintf("delete from %s where id=$1", docsTable)
+	if _, err := tx.Exec(deleteFromDocsQuery, docID); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	deleteFromWorkersDocs := fmt.Sprintf("delete from %s where document_id=$1", workersDocsTable)
+	if _, err := tx.Exec(deleteFromWorkersDocs, docID); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}

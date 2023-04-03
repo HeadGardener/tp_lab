@@ -35,12 +35,13 @@ func (s *AdminService) GetByID(workerID int) (models.Worker, error) {
 }
 
 func (s *AdminService) UpdateWorker(workerID int, workerInput models.UpdateWorkerInput) error {
-	worker, err := s.repos.WorkerInterface.GetByID(workerID)
+	_, err := s.repos.WorkerInterface.GetByID(workerID)
 	if err != nil {
 		return err
 	}
 
-	workerInput.ToWorker(&worker)
+	worker := workerInput.ToWorker()
+	worker.ID = workerID
 
 	return s.repos.WorkerInterface.Update(worker)
 }

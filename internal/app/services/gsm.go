@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"github.com/HeadHardener/tp_lab/internal/app/models"
 	"github.com/HeadHardener/tp_lab/internal/app/repositories"
 )
@@ -33,4 +34,25 @@ func (s *GSMService) GetAll() ([]models.Document, error) {
 
 func (s *GSMService) GetByID(docID int) (models.Document, error) {
 	return s.repos.GSMInterface.GetByID(docID)
+}
+
+func (s *GSMService) Update(docID int, docInput models.UpdateDocInput) error {
+	_, err := s.repos.GSMInterface.GetByID(docID)
+	if err != nil {
+		return errors.New("document doesn't exist")
+	}
+
+	document := docInput.ToDocument()
+	document.ID = docID
+
+	return s.repos.GSMInterface.Update(document)
+}
+
+func (s *GSMService) Delete(docID int) error {
+	_, err := s.repos.GSMInterface.GetByID(docID)
+	if err != nil {
+		return errors.New("document doesn't exist")
+	}
+
+	return s.repos.GSMInterface.Delete(docID)
 }
