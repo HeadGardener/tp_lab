@@ -45,12 +45,18 @@ func (h *Handler) InitRoutes() http.Handler {
 				r.Get("/get-all/", h.getAllWorkers)
 				r.Get("/get/{worker_id}", h.getWorkerByID)
 				r.Put("/update/{worker_id}", h.updateWorker)
-				// r.Delete("/delete/{worker_id}", h.deleteWorker)
 			})
 			r.Route("/gsm", func(r chi.Router) {
 				r.Put("/{document_id}", h.updateDocument)
 				r.Delete("/{document_id}", h.deleteDocument)
 			})
+		})
+
+		r.Route("/token", func(r chi.Router) {
+			r.Use(h.identifyUser)
+			// check token for front
+			r.Get("/check", h.isValid)
+			r.Get("/get-me", h.getMe)
 		})
 
 		r.Route("/gsm", func(r chi.Router) {

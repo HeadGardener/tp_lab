@@ -26,7 +26,7 @@ func NewAuthService(repos *repositories.Repository) *AuthService {
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	WorkerID int    `json:"worker_id_id"`
+	WorkerID int    `json:"worker_id"`
 	Role     string `json:"role"`
 }
 

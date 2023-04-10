@@ -14,6 +14,11 @@ const (
 
 func (h *Handler) identifyUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			newResponse(w, http.StatusOK, "")
+			return
+		}
+
 		header := r.Header.Get("Authorization")
 
 		if header == "" {
@@ -50,6 +55,11 @@ func (h *Handler) identifyUser(next http.Handler) http.Handler {
 
 func (h *Handler) checkRole(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			newResponse(w, http.StatusOK, "")
+			return
+		}
+
 		workerCtxValue := r.Context().Value(workerCtx)
 		workerAttributes, ok := workerCtxValue.(models.WorkerAttributes)
 		if !ok {
