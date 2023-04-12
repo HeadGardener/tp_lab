@@ -41,13 +41,12 @@ func (s *GSMService) GetAllWithID(workerID int) ([]models.Document, error) {
 }
 
 func (s *GSMService) Update(docID int, docInput models.UpdateDocInput) error {
-	_, err := s.repos.GSMInterface.GetByID(docID)
+	document, err := s.repos.GSMInterface.GetByID(docID)
 	if err != nil {
 		return errors.New("document doesn't exist")
 	}
 
-	document := docInput.ToDocument()
-	document.ID = docID
+	docInput.ToDocument(&document)
 
 	return s.repos.GSMInterface.Update(document)
 }

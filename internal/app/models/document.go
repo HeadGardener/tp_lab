@@ -64,9 +64,7 @@ func (d *CreateDocInput) Validate() error {
 	return nil
 }
 
-func (d *UpdateDocInput) ToDocument() Document {
-	var doc Document
-
+func (d *UpdateDocInput) ToDocument(doc *Document) {
 	if d.Car != nil && doc.Car != *d.Car {
 		doc.Car = *d.Car
 	}
@@ -94,8 +92,6 @@ func (d *UpdateDocInput) ToDocument() Document {
 	if d.IssueDate != nil && doc.IssueDate != *d.IssueDate {
 		doc.IssueDate = *d.IssueDate
 	}
-
-	return doc
 }
 
 func (mt *MyTime) UnmarshalJSON(b []byte) error {
