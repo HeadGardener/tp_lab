@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/HeadHardener/tp_lab/internal/app/models/websocket"
 	"github.com/HeadHardener/tp_lab/internal/app/services"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -22,7 +24,19 @@ func NewHandler(service *services.Service) *Handler {
 	}
 }
 
-func (h *Handler) InitRoutes() http.Handler {
+type WebSocketHandler struct {
+	hub       *ws.Hub
+	errLogger *zap.Logger
+}
+
+func NewWSHandler(hub *ws.Hub) *WebSocketHandler {
+	return &WebSocketHandler{
+		hub:       hub,
+		errLogger: newLogger(),
+	}
+}
+
+func InitRoutes(h *Handler, wsh *WebSocketHandler) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -30,6 +44,13 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	r.Route("/api", func(r chi.Router) {
 		// auth
@@ -65,6 +86,14 @@ func (h *Handler) InitRoutes() http.Handler {
 			r.Get("/", h.getAllDocuments)
 			r.Get("/{document_id}", h.getDocumentByID)
 			r.Get("/my", h.getDocumentsWithWorkerID)
+		})
+
+		r.Route("/chat", func(r chi.Router) {
+			// r.Use(h.identifyUser)
+			r.Post("/create-room", wsh.createRoom)
+			r.Get("/join-room/{room_id}", wsh.joinRoom)
+			r.Get("/get-rooms", wsh.getRooms)
+			r.Get("/get-clients/{room_id}", wsh.getClients)
 		})
 	})
 

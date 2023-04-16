@@ -42,6 +42,7 @@ type UpdateWorkerInput struct {
 type WorkerAttributes struct {
 	ID   int    `json:"id"`
 	Role string `json:"role"`
+	Name string `json:"name"`
 }
 
 func (w *CreateWorkerInput) Validate() error {

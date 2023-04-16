@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/HeadHardener/tp_lab/configs"
 	"github.com/HeadHardener/tp_lab/internal/app/handlers"
+	"github.com/HeadHardener/tp_lab/internal/app/models/websocket"
 	"github.com/HeadHardener/tp_lab/internal/app/repositories"
 	"github.com/HeadHardener/tp_lab/internal/app/services"
 	"github.com/HeadHardener/tp_lab/internal/pkg/server"
@@ -41,6 +42,10 @@ func main() {
 	service := services.NewService(repository)
 	handler := handlers.NewHandler(service)
 
+	hub := ws.NewHub()
+	websocketHandler := handlers.NewWSHandler(hub)
+	go hub.Run()
+
 	srvconfig, err := configs.NewServerConfig(*confPath)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("unable to read config file, error: %s", err.Error()))
@@ -49,7 +54,7 @@ func main() {
 	srv := &server.Server{}
 
 	go func() {
-		if err := srv.Run(srvconfig.ServerPort, handler.InitRoutes()); err != nil {
+		if err := srv.Run(srvconfig.ServerPort, handlers.InitRoutes(handler, websocketHandler)); err != nil {
 			logger.Error(fmt.Sprintf("error occurring while running server, err:%s", err.Error()))
 		}
 	}()

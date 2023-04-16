@@ -28,6 +28,7 @@ type tokenClaims struct {
 	jwt.StandardClaims
 	WorkerID int    `json:"worker_id"`
 	Role     string `json:"role"`
+	Name     string `json:"name"`
 }
 
 func (s *AuthService) GenerateToken(workerInput models.LogWorkerInput) (string, error) {
@@ -50,6 +51,7 @@ func (s *AuthService) GenerateToken(workerInput models.LogWorkerInput) (string, 
 		},
 		worker.ID,
 		worker.Role,
+		fmt.Sprintf("%s %s", worker.Name, worker.Surname),
 	})
 
 	return token.SignedString([]byte(secretKey))
@@ -76,6 +78,7 @@ func (s *AuthService) ParseToken(accessToken string) (models.WorkerAttributes, e
 	return models.WorkerAttributes{
 		ID:   claims.WorkerID,
 		Role: claims.Role,
+		Name: claims.Name,
 	}, nil
 }
 
