@@ -6,6 +6,8 @@ type Room struct {
 	Clients map[int]*Client `json:"clients"`
 }
 
+// TODO 1) add redis db; 2) Add delete endpoint; 3) add other methods like chat history and etc.
+
 type Hub struct {
 	Rooms      map[int]*Room
 	Register   chan *Client

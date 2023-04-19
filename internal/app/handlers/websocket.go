@@ -48,7 +48,6 @@ func (h *WebSocketHandler) joinRoom(w http.ResponseWriter, r *http.Request) {
 		h.newErrResponse(w, http.StatusBadRequest, "invalid room_id param")
 		return
 	}
-	// add responses for wshandler and rewrite meddleware
 
 	q := r.URL.Query()
 	clientID, err := strconv.Atoi(q.Get("user_id"))
