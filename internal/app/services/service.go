@@ -5,6 +5,8 @@ import (
 	"github.com/HeadHardener/tp_lab/internal/app/repositories"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Authorization interface {
 	GenerateToken(workerInput models.LogWorkerInput) (string, error)
 	ParseToken(accessToken string) (models.WorkerAttributes, error)

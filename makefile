@@ -4,5 +4,8 @@ build:
 run:
 	go run ./cmd/tp_lab
 
+test:
+	go test -v ./...
+
 vendor:
 	go mod vendor -v
