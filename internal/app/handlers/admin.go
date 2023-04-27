@@ -51,7 +51,7 @@ func (h *Handler) getWorkerByID(w http.ResponseWriter, r *http.Request) {
 
 	worker, err := h.service.Administration.GetByID(workerID)
 	if err != nil {
-		h.newErrResponse(w, http.StatusBadRequest, err.Error())
+		h.newErrResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -81,5 +81,3 @@ func (h *Handler) updateWorker(w http.ResponseWriter, r *http.Request) {
 		"status": "updated",
 	})
 }
-
-// func (h *Handler) deleteWorker(w http.ResponseWriter, r *http.Request) {}
