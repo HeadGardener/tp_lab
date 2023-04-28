@@ -5,7 +5,7 @@ run:
 	go run ./cmd/tp_lab
 
 test:
-	go test -v ./...
+	gotest -v ./...
 
 vendor:
 	go mod vendor -v
